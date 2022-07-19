@@ -1,0 +1,109 @@
+.MediumCornsilkButton {
+    background: #fffffa;
+    background-image: linear-gradient(to bottom, #fffffa, #ece9d8);
+        color: blue;
+}
+
+.BigBlueButton {
+
+    color: #ece9d8;
+    font-size: 22px;
+    background: #0433ff;
+    background-image: linear-gradient(to bottom, #0433ff, #0326C0);
+    border-radius: 11px;
+}
+
+.BigGreenButton {
+    background: #32cd32;
+    background-image: linear-gradient(to bottom, #32cd32, #2cb32c);
+    font-size: 22px;
+}
+
+.Red1Button {
+    background: #f62a09; /* #ff2500; */
+    color: white;
+    font-size: 16px;
+}
+
+.Red2Button {
+    background: #bc4242;
+    color: #e0e0e0;
+}
+
+.Red3Button {
+    background: #853f3f;
+    color: #e0e0e0;
+    font-size: 16px;
+}
+
+.SeafoamButton {
+    background:#8cbe8c;
+    font-size: 16px;
+
+    color: #e0e0e0;
+}
+
+.MediumText {
+    font-size: 30px;
+}
+
+.LargeText {
+    font-size: 38px;
+}
+
+.Timer {
+    font-size: 40px;
+}
+
+.ButtonGradient {
+    background-image: -gtk-gradient (linear,
+                                     left top,
+				     left bottom,
+				     from (@bg_color),
+				     color-stop (0.5, darker (@bg_color)),
+				     to (@bg_color));
+
+}
+
+.ButtonGradient2 {
+    background-image: -gtk-gradient (linear,
+                                     left top,
+				     left bottom,
+				     from (@bg_color),
+				     color-stop (0.5, lighter (@bg_color)),
+				     to (@bg_color));
+
+}
+
+button {
+    border-radius: 11px;
+    font-weight: bold;
+	
+}
+
+
+
+button:hover
+ {
+    background-image: -gtk-gradient (linear,
+                                     left top, left bottom,
+                                     from (shade (@selected_bg_color, 1.1)),
+                                     color-stop (0.55, shade (@selected_bg_color, 1.0)),
+                                     color-stop (0.55, shade (@selected_bg_color, 0.8)),
+                                     to (shade (@selected_bg_color, 0.9)));
+ }
+
+/*
+.BigGreenButton:hover
+ {
+    background-image: -gtk-gradient (linear,
+                                     left top, left bottom,
+                                     from (shade (@selected_bg_color, 1.1)),
+                                     color-stop (0.55, shade (@selected_bg_color, 1.0)),
+                                     color-stop (0.55, shade (@selected_bg_color, 0.8)),
+                                     to (shade (@selected_bg_color, 0.9)));
+ }
+*/
+frame {
+ /*   background-color: orange; */
+}
