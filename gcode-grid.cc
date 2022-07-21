@@ -1,5 +1,3 @@
-
-#include <iostream>
 #include "gcode-grid.h"
 
 GCodeGrid::GCodeGrid()
@@ -84,6 +82,31 @@ int GCodeGrid::getSelectedLineId(const Gtk::TreeModel::Path& path)
 
 }
 
+/**
+ *
+ * So here's how you find a row and select it. I was intending to
+ * highlight in yellow, but that looked like an elaborate combination
+ * of programatically setting the CSS for the selected row. Since this
+ * works with the default blue color, good enough for now.
+ * 
+ * get_selection is a member of TreeView, returning the TreeSelection
+ * instance, whose select(&TreePath) method does the selecting. To get
+ * a path to the row we want to select, there's a constructor that takes
+ * a string as an argument. If it's an actual tree with child branches,
+ * it's a colon separated traversal list, ala '4:2:7'. For this simple
+ * list, the position in the list (row_index, e.g. '3' works)
+ *
+ * This approach gets you access to the Row object, but that doesn't 
+ * seem to be all that useful.
+ *    Gtk::TreeModel::Row row = (m_refTreeModel->children())[row_index]
+ *
+ **/
+void GCodeGrid::on_highlight_row(uint row_index)
+{
+  Glib::ustring path_string(std::to_string(row_index));
+  Gtk::TreePath path(path_string);
+  get_selection()->select(path);
+}
 
 GCodeGrid::~GCodeGrid()
 {
