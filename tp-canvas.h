@@ -20,6 +20,7 @@
   
 //typedef std::shared_ptr<std::vector<double>> dash_vector;
 //typedef std::shared_ptr<std::vector<GCodeCommand>> coordinate_vector;
+typedef sigc::signal<void, uint> type_signal_highlight_grid;
 
 class TPCanvas : public Gtk::DrawingArea
 {
@@ -52,13 +53,15 @@ public:
   void set_to_home();
   std::pair<double,double> get_coord_at_index(int index);
   void highlight_line(int index);
+  type_signal_highlight_grid signal_highlight_grid();
   
 protected:
   //Override default signal handler:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
   bool _on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
-  uint m_selected_line_index; // = 0;
-  bool animate; // = false;
+  uint m_selected_line_index;
+  uint m_current_line_index; 
+  bool animate;
 
   Glib::ustring double_to_string(double dVal);
   void draw_crosshairs(const Cairo::RefPtr<Cairo::Context>& cr);
@@ -69,9 +72,10 @@ protected:
   void _draw_toolpath(const Cairo::RefPtr<Cairo::Context>& cr);
   
   void recalc_translation();
-  //void stroke_it(const Cairo::RefPtr<Cairo::Context>& cr);
   double m_line_width = 0.005;
   bool on_timeout();
+  
+  type_signal_highlight_grid m_signal_highlight_grid;
   
 private:
   Glib::RefPtr<Gtk::Builder> m_refGlade;
