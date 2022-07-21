@@ -17,7 +17,7 @@ TPCanvas::TPCanvas(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& re
   m_dashes->push_back(0.01);
   m_dashes->push_back(0.01);
   
-  m_selected_line_index = 0;
+  m_current_line_index = 0;
   animate = false;
 }
 
@@ -39,7 +39,7 @@ void TPCanvas::on_animate(bool state)
     {
       animate = true;
       Glib::signal_timeout().connect( sigc::mem_fun(*this, &TPCanvas::on_timeout), 300 );
-      m_selected_line_index = 0;
+      m_current_line_index = 0;
     }
   else
     {
@@ -178,7 +178,7 @@ void TPCanvas::draw_crosshairs(const Cairo::RefPtr<Cairo::Context>& cr)
 /**
  * 
  * Called on redraw when the animate flag is set. The member 
- * variable m_selected_line_index tracks the current upper 
+ * variable m_current_line_index tracks the current upper 
  * bound of the GCodeCommand vector. When the timer fires, 
  * the handler (on_timer) increments this value and the path
  * is rendered to that point, giving the effect that the path
@@ -212,7 +212,7 @@ void TPCanvas::animate_toolpath(const Cairo::RefPtr<Cairo::Context>& cr)
 
   GCodeCommand cmd;
 
-  for(uint i = 0; i < m_selected_line_index; i++)
+  for(uint i = 0; i < m_current_line_index; i++)
     {
       cmd = m_GCM.m_coords->at(i);
 
@@ -251,7 +251,7 @@ void TPCanvas::animate_toolpath(const Cairo::RefPtr<Cairo::Context>& cr)
   // When the complete path has rendered, unset animate
   // flag and the checkbox. This will result in the
   // handler killing its timer
-  if(m_selected_line_index == m_GCM.m_coords->size()) {
+  if(m_current_line_index == m_GCM.m_coords->size()) {
     animate = false;
     Gtk::CheckButton *pAnimateModeCB;
     m_refGlade->get_widget("cb_animate", pAnimateModeCB);
@@ -337,27 +337,30 @@ void TPCanvas::draw_toolpath(const Cairo::RefPtr<Cairo::Context>& cr)
 
     cr->stroke();
   }
-  /*
+
   // TODO: fix this, bidirectionally
   // 1. clicking a line in the grid highlights it in the drawingarea
-  // 2. highlight the m_selected_line_index on the grid 
+  // 2. highlight the m_current_line_index on the grid 
   //    for each animation pass
+
   if(m_has_highlight) {
-    std::cout << "doing the highlight" << std::endl;
-    cr->set_source_rgb(0.0,1.0,0.0);
+
+    cr->set_source_rgba(0.96,0.93,0.26,0.5);
     cr->set_line_width(0.01);
-      
+
+    GCodeCommand _start = m_GCM.m_coords->at(m_selected_line_index - 1);
+    GCodeCommand _end = m_GCM.m_coords->at(m_selected_line_index);
     cr->move_to(_start.scaled_x, _start.scaled_y);
     cr->line_to(_end.scaled_x, _end.scaled_y);
-    std::cout << "highlighting " <<  _start.scaled_x << " / " <<  _start.scaled_y;
-    std::cout << " to " <<  _end.scaled_x << " / " <<  _end.scaled_y << std::endl;
+    //    std::cout << "highlighting " <<  _start.scaled_x << " / " <<  _start.scaled_y;
+    //    std::cout << " to " <<  _end.scaled_x << " / " <<  _end.scaled_y << std::endl;
     cr->stroke();
   }
 
   else {
     // first point of path, draw a small circle
   }
-*/
+
 }
 
 
@@ -496,9 +499,16 @@ bool TPCanvas::on_timeout()
       Gdk::Rectangle r(0, 0, get_allocation().get_width(),
 		       get_allocation().get_height());
       win->invalidate_rect(r, false);
-      m_selected_line_index++;
+      m_signal_highlight_grid.emit(m_current_line_index++);
       return true;
     }
   
   else return false;
 }
+
+
+type_signal_highlight_grid TPCanvas::signal_highlight_grid()
+{
+  return m_signal_highlight_grid;
+}
+
