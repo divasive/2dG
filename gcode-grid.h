@@ -4,8 +4,10 @@
 
 #include <gtkmm.h>
 #include <vector>
-#include "tp-canvas.h"
+#include <iostream>
+#include <stdlib.h>
 #include <boost/algorithm/string/predicate.hpp>
+#include "tp-canvas.h"
 
 
 class GCodeGrid : public Gtk::TreeView
@@ -17,6 +19,7 @@ public:
   Glib::RefPtr<Gtk::ListStore> getModel() {return m_refTreeModel;}
   Glib::ustring getSelectedCode(const Gtk::TreeModel::Path& path);
   int getSelectedLineId(const Gtk::TreeModel::Path& path);
+  void on_highlight_row(uint row_index);
   
 protected:
   //Signal handlers:
