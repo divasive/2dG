@@ -9,7 +9,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   connectWidgets();
   m_pScaleFactorLbl->set_text(double_to_string(m_pCanvas->get_scale_factor()));
   buildPolygons();
-  std::cout << "constructor done" << std::endl;
 
 }
 
@@ -18,10 +17,9 @@ void MainWindow::connectWidgets()
   // Widgets
   m_refGlade->get_widget_derived("toolpath_canvas", m_pCanvas);
   m_pCanvas->signal_size_allocate().connect( sigc::mem_fun(*this, &MainWindow::on_my_size_allocate));
-
+  m_pCanvas->signal_highlight_grid().connect(sigc::mem_fun(m_GCodeGrid, &GCodeGrid::on_highlight_row) );
   m_refGlade->get_widget("gcode_viewport", m_pGCViewport);
   m_pGCViewport->add(m_GCodeGrid);
-  //  m_refGlade->get_widget_derived("gcode_grid", m_pGCodeGrid);
   m_GCodeGrid.signal_row_activated().connect(sigc::mem_fun(*this, &MainWindow::on_row_activated) );
   
   // Menu Bar
@@ -84,6 +82,7 @@ void MainWindow::connectWidgets()
   m_refGlade->get_widget("cb_reverse_y", m_pReverseYCB);
   m_pReverseXCB->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_rev_x_btn_clicked) );
   m_pReverseYCB->signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::on_rev_y_btn_clicked) );
+
 
   //CSS Style
   /*
@@ -479,9 +478,9 @@ void MainWindow::on_row_activated(const Gtk::TreeModel::Path& path, Gtk::TreeVie
 
   Glib::ustring codeLine = m_GCodeGrid.getSelectedCode(path);
   int lineId = m_GCodeGrid.getSelectedLineId(path);
-  //  std::cout << "you selected " << lineId << "  "  << codeLine << std::endl;
-  //  std::pair <double,double> coords = m_pCanvas->get_coord_at_index(lineId);
-  //  std::cout << "tp canvas says: " << coords.first << " - " << coords.second << std::endl;
+  std::cout << "you selected " << lineId << "  "  << codeLine << std::endl;
+  std::pair <double,double> coords = m_pCanvas->get_coord_at_index(lineId);
+  std::cout << "tp canvas says: " << coords.first << " - " << coords.second << std::endl;
   m_pCanvas->highlight_line(lineId);
 }
 
